@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Routecraft.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3eef55337cfd30b0ebdc8edf76801a1637c4140b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4047adb5134b307e71a49b0f715cb0038717d37c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Routecraft.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Routecraft.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
