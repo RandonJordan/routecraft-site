@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/Routecraft.Api.props" />
-</Project>
