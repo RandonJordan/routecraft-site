@@ -6,7 +6,193 @@
   --tan: #C8A46A; /* your outdoors accent */
 }
 
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   background: var(--offwhite);
   color: var(--charcoal);
+  display: block; /* override any template flex */
+  margin: 0;
+}
+
+// .container {
+//   max-width: 1100px;
+// }
+
+.card {
+  border-radius: 1rem;
+}
+
+.navbar-brand {
+  letter-spacing: 0.3px;
+}
+
+hr {
+  opacity: 0.15;
+}
+.container-narrow {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+/* Logo */
+.navbar {
+  min-height: 70px;      // sets a safe navbar height
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden;      // prevents content from pushing navbar taller
+}
+
+.nav-logo {
+  max-height: 70px;   // logo cannot exceed navbar height
+  height: 70px;       // forces scaling
+  width: auto;
+  object-fit: contain;
+}
+
+/* Brand text */
+.brand-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+/* Prevent overflow on small screens */
+@media (max-width: 480px) {
+  .nav-logo {
+    max-height: 40px;
+  }
+  .brand-text {
+    font-size: 0.9rem;
+  }
+}
+
+.navbar-brand span {
+  font-size: 1.1rem;
+  letter-spacing: 0.25px;
+}
+
+.nav-link {
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .nav-logo {
+    height: 45px;
+  }
+}
+
+/* Modern hero */
+.hero {
+  padding: 4rem 0 3rem 0;
+  background:
+    radial-gradient(800px circle at 10% 10%, fade(#C8A46A, 18%) 0%, transparent 55%),
+    radial-gradient(900px circle at 90% 0%, fade(#1F3D2B, 14%) 0%, transparent 60%),
+    linear-gradient(180deg, fade(#1F3D2B, 6%) 0%, transparent 65%);
+}
+
+.hero-card {
+  border-radius: 1.25rem;
+  border: 1px solid fade(#2B2B2B, 10%);
+  box-shadow: 0 16px 40px fade(#2B2B2B, 10%);
+  background: white;
+  width: 100%;
+  padding-left: 3rem !important;
+  padding-right: 3rem !important;
+}
+
+.hero-badge {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+  padding: .4rem .75rem;
+  border-radius: 999px;
+  background: fade(#1F3D2B, 10%);
+  color: #1F3D2B;
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.btn-brand {
+  background: #1F3D2B;
+  border-color: #1F3D2B;
+  color: #F7F7F7;
+}
+
+.btn-brand:hover {
+  background: darken(#1F3D2B, 6%);
+  border-color: darken(#1F3D2B, 6%);
+  color: #F7F7F7;
+}
+
+.btn-outline-brand {
+  border-color: fade(#2B2B2B, 25%);
+  color: #2B2B2B;
+}
+
+.btn-outline-brand:hover {
+  border-color: #2B2B2B;
+  background: fade(#2B2B2B, 6%);
+}
+
+.badge-featured {
+  display: inline-block;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--forest);
+  background: rgba(31, 61, 43, 0.12);
+  border: 1px solid rgba(31, 61, 43, 0.22);
+}
+
+.elevated {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(43, 43, 43, 0.10);
+  box-shadow:
+    0 18px 55px rgba(43, 43, 43, 0.18),
+    0 2px 12px rgba(43, 43, 43, 0.10);
+}
+
+/* Layout system */
+.page {
+  background-color: var(--offwhite);
+  color: var(--charcoal);
+  background:
+    radial-gradient(1100px circle at 12% 8%, rgba(200, 164, 106, 0.22) 0%, transparent 55%),
+    radial-gradient(900px circle at 90% 12%, rgba(31, 61, 43, 0.16) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(31, 61, 43, 0.08) 0%, transparent 65%),
+    repeating-linear-gradient(
+      135deg,
+      rgba(43, 43, 43, 0.03) 0px,
+      rgba(43, 43, 43, 0.03) 8px,
+      transparent 8px,
+      transparent 18px
+    );
+  min-height: 100vh;
+}
+
+.container-narrow {
+  max-width: 1100px;
+}
+
+/* Hero */
+.hero {
+  padding: 3.25rem 0 2.25rem 0;
+}
+
+.hero-card {
+  border-radius: 1.25rem;
+  border: 1px solid fade(#2B2B2B, 10%);
+  box-shadow: 0 18px 55px fade(#2B2B2B, 12%);
+  background: white;
+}
+
+.shadow-sm {
+  box-shadow: 0 10px 24px rgba(43, 43, 43, 0.10) !important;
 }
