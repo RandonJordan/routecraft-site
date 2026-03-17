@@ -15,5 +15,5 @@ public sealed class ContactMessage
     [MaxLength(2000)]
     public string Message { get; set; } = "";
 
-    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+    public DateTimeOffset CreatedUtc { get; set; } = DateTimeOffset.UtcNow;
 }
