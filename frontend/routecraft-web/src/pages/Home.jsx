@@ -1,9 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { sanitizeName, formatPhone } from "../utils/input";
 
 export default function Home() {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState("");
+  const [sendSuccess, setSendSuccess] = useState(false);
+  const [phoneValue, setPhoneValue] = useState("");
+  function formatPhone(value) {
+      const digits = value.replace(/\D/g, "").slice(0, 10);
+      const len = digits.length;
+
+      if (len === 0) return "";
+      if (len < 4) return `(${digits}`;
+      if (len < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
 
   useEffect(() => {
     let cancelled = false;
@@ -26,7 +40,7 @@ export default function Home() {
         if (!cancelled) setLoading(false);
       }
     }
-
+    
     loadStatus();
 
     return () => {
@@ -87,14 +101,10 @@ export default function Home() {
               </div>
             </section>
 
-
-
-
-
-            <section id="services" className="mt-5">
+            <section id="services" className="mt-5 elevated ">
               <h2 className="h4 fw-bold mb-3">Services</h2>
 
-              <div className="row g-4">
+              <div className="row g-4 ">
                 {/* Featured: Custom Code / Business Software */}
                 <div className="col-lg-7">
                   <div
@@ -198,7 +208,7 @@ export default function Home() {
                   <div className="col-md-4 text-md-end">
                     <a
                       className="btn btn-light fw-bold px-4 py-2"
-                      href="tel:3039071041"
+                      href="#"
                     >
                       Call/Text (303) 907-1041
                     </a>
@@ -215,16 +225,116 @@ export default function Home() {
                 <div className="col-md-5">
                   <div className="p-4 elevated">
                     <h2 className="h5 fw-bold mb-3">Contact</h2>
+                    {sendSuccess && (
+                        <div className="alert alert-success mb-3">
+                          Message sent! I’ll get back to you soon.
+                        </div>
+                      )}
 
-                    <div className="mb-2">
-                      <div className="text-muted small">Call or text</div>
-                      <div className="fw-semibold">(303) 907-1041</div>
-                    </div>
+                      {sendError && (
+                        <div className="alert alert-warning mb-3">
+                          {sendError}
+                        </div>
+                      )}
+                    <form
+                      className="mt-3"
+                      onSubmit={async (e) => {
+                        
+                        e.preventDefault();
+                        setSendSuccess(false);
+                        setSendError("");
 
-                    <div className="mb-3">
-                      <div className="text-muted small">Email</div>
-                      <div className="fw-semibold">hello@yourdomain.com</div>
-                    </div>
+                        const form = e.currentTarget;
+                        const name = form.name.value.trim();
+                        const phone = form.phone.value.trim();
+                        const message = form.message.value.trim();
+
+                        setSendSuccess(false);
+                        setSendError("");
+                        if (!name || !phoneValue.trim() || !message) {
+                          setSendSuccess(false);
+                          setSendError("Please fill out name, phone, and message.");
+                          return;
+                        }
+
+                        const phoneDigits = phoneValue.replace(/\D/g, "");
+                        if (phoneDigits.length !== 10) {
+                          setSendSuccess(false);
+                          setSendError("Please enter a valid 10-digit phone number.");
+                          return;
+                        }
+
+                        try {
+
+                          setIsSending(true);
+                          setSendError("");
+                          setSendSuccess(false);
+                          const res = await fetch("http://localhost:5055/api/contact", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ name, phone, message }),
+                          });
+
+                          const data = await res.json().catch(() => ({}));
+
+                          if (!res.ok) {
+                            setSendSuccess(false);
+                            setSendError(data?.error || "Something went wrong sending your message.");
+                            return;
+                          }
+                          //Success
+                          setSendSuccess(true);
+                          form.reset();
+                          setPhoneValue("");
+                        } catch {
+                          setSendSuccess(false);
+                          setSendError("Could not reach the server. Please try again.");
+                        } finally {
+                          setIsSending(false);
+                        }
+                      }}
+                    >
+                      <div className="mb-2">
+                        <label className="form-label small text-muted">Name</label>
+                        <input
+                          name="name"
+                          className="form-control"
+                          placeholder="Your name"
+                          onInput={(e) => {
+                            e.target.value = sanitizeName(e.target.value);
+                          }}
+                        />
+                      </div>
+
+                      <div className="mb-2">
+                        <label className="form-label small text-muted">Phone</label>
+                        <input
+                          name="phone"
+                          className="form-control"
+                          placeholder="(xxx) xxx-xxxx"
+                          inputMode="tel"
+                          value={phoneValue}
+                          onChange={(e) => setPhoneValue(formatPhone(e.target.value))}
+                          
+                        />
+                      </div>
+
+                      <div className="mb-3">
+                        <label className="form-label small text-muted">Message</label>
+                        <textarea
+                          name="message"
+                          className="form-control"
+                          rows="3"
+                          placeholder="What can I help you with?"
+                        />
+                      </div>
+
+                      <button type="submit" className="btn btn-brand w-100" disabled={isSending}>
+                        {isSending ? "Sending..." : "Send message"}
+                      </button>
+
+                    </form>
+
 
                     <div className="small text-muted">
                       Response time: usually same day.
@@ -234,26 +344,7 @@ export default function Home() {
               </div>
             </section>
 
-            <div className="mt-4">
-              <h5 className="mb-2">API Status</h5>
-
-              {loading && (
-                <div className="text-muted">Checking API…</div>
-              )}
-
-              {!loading && error && (
-                <div className="alert alert-warning mb-0">
-                  <strong>Couldn’t reach the API.</strong> {error}
-                </div>
-              )}
-
-              {!loading && !error && status && (
-                <div className="alert alert-success mb-0">
-                  <div><strong>{status.message}</strong></div>
-                  <div className="small text-muted">UTC: {status.utc}</div>
-                </div>
-              )}
-            </div>
+            
           </div>
          
         </div>
