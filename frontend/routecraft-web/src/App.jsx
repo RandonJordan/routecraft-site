@@ -1,12 +1,17 @@
-import Navbar from "./components/Navbar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Home />
-    </>
+    <BrowserRouter>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
