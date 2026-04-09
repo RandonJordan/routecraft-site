@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../assets/logo-mountains.png";
+import { Link } from "react-router-dom";
 
 export default function NavBar() {
   return (
@@ -7,12 +8,12 @@ export default function NavBar() {
       <div className="container-fluid">
 
         {/* LOGO + BRAND */}
-        <a className="navbar-brand d-flex align-items-center" href="#home">
+        <a className="navbar-brand d-flex align-items-center" to="#home">
           <img 
             src={logo} 
             alt="RouteCraft Logo" 
             className="nav-logo"
-            style={{ height: "55px", width: "auto" }}
+            // style={{ height: "55px", width: "auto" }}
           />
           <span className="ms-2 brand-text">RouteCraft Technology Services</span>
         </a>
@@ -38,6 +39,9 @@ export default function NavBar() {
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#services">Services</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" to="/software">Software</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#contact">Contact</a>

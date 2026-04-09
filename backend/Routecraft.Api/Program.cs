@@ -90,7 +90,7 @@ app.MapGet("/api/admin/messages", async (HttpRequest request, AppDbContext db, I
 
     return Results.Ok(items);
 });
-
+app.MapGet("/api/status", () => Results.Ok(new { ok = true, message = "API is running" }));
 
 app.Run();
 

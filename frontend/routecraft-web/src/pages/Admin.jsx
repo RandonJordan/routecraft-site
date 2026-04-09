@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Admin() {
   const [apiKey, setApiKey] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+
+  useEffect(() => {
+    document.title = "Admin | Route Craft";
+  }, []);
+
 
   async function loadMessages() {
     setErr("");
