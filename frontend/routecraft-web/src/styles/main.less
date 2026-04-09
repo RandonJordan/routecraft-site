@@ -418,3 +418,51 @@ hr {
   margin-top: 3px;
   box-shadow: 0 0 0 4px rgba(200, 164, 106, 0.18);
 }
+
+/* Navbar link hover: modern underline + subtle lift */
+.navbar .nav-link {
+  position: relative;
+  font-weight: 600;
+  opacity: 0.92;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.35rem;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--tan);
+  opacity: 0;
+  transform: scaleX(0.2);
+  transform-origin: left center;
+  transition: opacity 160ms ease, transform 220ms ease;
+}
+
+.navbar .nav-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.navbar .nav-link:hover::after {
+  opacity: 0.95;
+  transform: scaleX(1);
+}
+
+/* Active route (NavLink adds .active by default) */
+.navbar .nav-link.active {
+  opacity: 1;
+}
+
+.navbar .nav-link.active::after {
+  opacity: 0.95;
+  transform: scaleX(1);
+}
+.navbar .nav-link:hover::after {
+  opacity: 0.95;
+  transform: scaleX(1);
+  box-shadow: 0 0 12px rgba(200, 164, 106, 0.45);
+}
