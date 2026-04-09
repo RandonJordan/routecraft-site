@@ -17,7 +17,8 @@ export default function Admin() {
     setItems([]);
 
     try {
-      const res = await fetch("http://localhost:5055/api/admin/messages", {
+      
+      const res = await fetch(`${API}/api/admin/messages`, {
         headers: { "X-Admin-Key": apiKey },
       });
 

@@ -32,6 +32,9 @@ export default function Home() {
     };
   }, []);
 
+  const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5055";
+
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -42,7 +45,7 @@ export default function Home() {
     useEffect(() => {
       document.title = "Route Craft Technology Services";
     }, []);
-    
+
     const form = e.currentTarget;
     const name = form.name.value.trim();
     const message = form.message.value.trim();
@@ -70,7 +73,7 @@ export default function Home() {
     try {
       setIsSending(true);
 
-      const res = await fetch("http://localhost:5055/api/contact", {
+      const res = await fetch(`${API}/api/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, message }),
