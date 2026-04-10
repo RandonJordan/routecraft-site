@@ -36,7 +36,7 @@ export default function Home() {
     };
   }, []);
 
-  const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5055";
+  const API = import.meta.env.VITE_API_BASE_URL;
 
 
   async function handleSubmit(e) {
@@ -46,7 +46,10 @@ export default function Home() {
     setSendSuccess(false);
     setSendError("");
 
-    
+    if (!API) {
+  setSendError("Site is not configured yet. Please try again shortly.");
+  return;
+}
 
     const form = e.currentTarget;
     const name = form.name.value.trim();
