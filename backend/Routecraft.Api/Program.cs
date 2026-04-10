@@ -1,44 +1,63 @@
 using Microsoft.EntityFrameworkCore;
 using Routecraft.Api.Data;
 using Routecraft.Api.Models;
-using Routecraft.Api.Data;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlite(builder.Configuration.GetConnectionString("Default"));
-});
+// ===== CORS (config-driven) =====
+var corsPolicyName = "RoutecraftCors";
 
-var corsPolicyName = "AllowViteDev";
+// Read allowed origins from config first, fall back to sensible defaults
+var configuredOrigins = builder.Configuration
+    .GetSection("Cors:Origins")
+    .Get<string[]>();
+
+var defaultOrigins = new[]
+{
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+    "https://brave-beach-0be2cb61e.6.azurestaticapps.net"
+};
+
+var allowedOrigins = (configuredOrigins is { Length: > 0 }) ? configuredOrigins : defaultOrigins;
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// ===== DB =====
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("Default"));
+});
+
+// Swagger (dev)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+Directory.CreateDirectory("/home/site/wwwroot/App_Data");
+// CORS must be before endpoints
 app.UseCors(corsPolicyName);
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// ===== Endpoints =====
 
+app.MapGet("/api/status", () => Results.Ok(new { ok = true, message = "API is running" }))
+   .RequireCors(corsPolicyName);
 
 app.MapPost("/api/contact", async (ContactRequest req, AppDbContext db) =>
 {
@@ -52,6 +71,7 @@ app.MapPost("/api/contact", async (ContactRequest req, AppDbContext db) =>
     if (req.Name.Length > 80) return Results.BadRequest(new { ok = false, error = "Name is too long." });
     if (req.Phone.Length > 30) return Results.BadRequest(new { ok = false, error = "Phone is too long." });
     if (req.Message.Length > 2000) return Results.BadRequest(new { ok = false, error = "Message is too long." });
+
     var msg = new ContactMessage
     {
         Name = req.Name.Trim(),
@@ -62,8 +82,10 @@ app.MapPost("/api/contact", async (ContactRequest req, AppDbContext db) =>
 
     db.ContactMessages.Add(msg);
     await db.SaveChangesAsync();
+
     return Results.Ok(new { ok = true, message = "Message received." });
-});
+})
+.RequireCors(corsPolicyName);
 
 app.MapGet("/api/admin/messages", async (HttpRequest request, AppDbContext db, IConfiguration config) =>
 {
@@ -89,15 +111,15 @@ app.MapGet("/api/admin/messages", async (HttpRequest request, AppDbContext db, I
         .ToListAsync();
 
     return Results.Ok(items);
-});
-app.MapGet("/api/status", () => Results.Ok(new { ok = true, message = "API is running" }));
+})
+.RequireCors(corsPolicyName);
 
 app.Run();
 
+// DTO
 internal sealed class ContactRequest
 {
     public string Name { get; set; } = "";
     public string Phone { get; set; } = "";
     public string Message { get; set; } = "";
 }
-

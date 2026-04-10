@@ -9,15 +9,17 @@ export default function Home() {
   const [sendError, setSendError] = useState("");
   const [sendSuccess, setSendSuccess] = useState(false);
 
-  // Optional: API status (keep if you want; safe if backend is running)
+  // API Status
   const [apiOk, setApiOk] = useState(null);
-
+  useEffect(() => {
+      document.title = "Route Craft Technology Services";
+    }, []);
   useEffect(() => {
     let cancelled = false;
 
     async function ping() {
       try {
-        const res = await fetch("http://localhost:5055/api/status");
+        const res = await fetch(`${API}/api/status`);
         if (!res.ok) throw new Error("status failed");
         const data = await res.json();
         if (!cancelled) setApiOk(!!data?.ok);
@@ -25,6 +27,8 @@ export default function Home() {
         if (!cancelled) setApiOk(false);
       }
     }
+
+    
 
     ping();
     return () => {
@@ -42,9 +46,7 @@ export default function Home() {
     setSendSuccess(false);
     setSendError("");
 
-    useEffect(() => {
-      document.title = "Route Craft Technology Services";
-    }, []);
+    
 
     const form = e.currentTarget;
     const name = form.name.value.trim();
