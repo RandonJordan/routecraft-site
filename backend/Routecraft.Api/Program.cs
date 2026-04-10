@@ -44,7 +44,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-Directory.CreateDirectory("/home/site/wwwroot/App_Data");
+try { Directory.CreateDirectory("/home/site/wwwroot/App_Data"); } catch { }
+
+// Apply EF Core migrations on startup (creates tables if missing)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 // CORS must be before endpoints
 app.UseCors(corsPolicyName);
 
