@@ -10,7 +10,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin-r239" element={<Admin />} />
         <Route path="/software" element={<Software />} />
       </Routes>
     </BrowserRouter>
