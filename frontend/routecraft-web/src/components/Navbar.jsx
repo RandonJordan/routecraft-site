@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "../assets/logo-mountains.png";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import * as bootstrap from "bootstrap";
 
 export default function NavBar() {
 const { pathname } = useLocation();
@@ -24,20 +25,42 @@ const onAdmin = pathname === "/admin";
         </Link>
 
         {/* COLLAPSE BUTTON */}
-        <button 
-          className="navbar-toggler" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarContent"
-          aria-controls="navbarContent" 
-          aria-expanded="false" 
+        <button
+          className="navbar-toggler"
+          type="button"
           aria-label="Toggle navigation"
+          onClick={() => {
+            const el = document.getElementById("navbarContent");
+            if (!el) return;
+
+            const collapse = bootstrap.Collapse.getOrCreateInstance(el, { toggle: false });
+
+            // Toggle manually
+            if (el.classList.contains("show")) collapse.hide();
+            else collapse.show();
+          }}
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" />
         </button>
 
         {/* COLLAPSIBLE LINKS */}
-        <div className="collapse navbar-collapse" id="navbarContent">
+        <div className="collapse navbar-collapse" id="navbarContent"
+                  onClick={(e) => {
+              const link = e.target.closest("a.nav-link");
+              if (!link) return;
+
+              // Only close if the hamburger button is visible (mobile)
+              const toggler = document.querySelector(".navbar-toggler");
+              const isMobile = toggler && window.getComputedStyle(toggler).display !== "none";
+              if (!isMobile) return;
+
+              const el = document.getElementById("navbarContent");
+              if (!el) return;
+
+              const collapse = bootstrap.Collapse.getOrCreateInstance(el);
+              collapse.hide();
+            }}
+          >
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             
 

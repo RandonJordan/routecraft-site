@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { sanitizeName, formatPhone } from "../utils/input";
 import * as bootstrap from "bootstrap";
+import Turnstile from "react-turnstile";
+
 
 export default function Home() {
   // Contact form state
@@ -8,15 +10,16 @@ export default function Home() {
   const [isSending, setIsSending] = useState(false);
   const [sendError, setSendError] = useState("");
   const [sendSuccess, setSendSuccess] = useState(false);
+  const [tsToken, setTsToken] = useState("");
 
   // API Status
   const [apiOk, setApiOk] = useState(null);
   useEffect(() => {
       document.title = "Route Craft Technology Services";
     }, []);
+
   useEffect(() => {
     let cancelled = false;
-
     async function ping() {
       try {
         const res = await fetch(`${API}/api/status`);
@@ -27,14 +30,23 @@ export default function Home() {
         if (!cancelled) setApiOk(false);
       }
     }
+        ping();
+        return () => {
+          cancelled = true;
+        };
+      }, []);
 
-    
+  useEffect(() => {
+        // Auto-hide success/error banners after a short delay
+        if (!sendSuccess && !sendError) return;
 
-    ping();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+        const t = setTimeout(() => {
+          setSendSuccess(false);
+          setSendError("");
+        }, 6000);
+
+        return () => clearTimeout(t);
+      }, [sendSuccess, sendError]);
 
   const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -81,7 +93,7 @@ export default function Home() {
       const res = await fetch(`${API}/api/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, message }),
+        body: JSON.stringify({ name, phone, message, turnstileToken: tsToken }),
       });
 
       let data = {};
@@ -418,6 +430,7 @@ export default function Home() {
                               placeholder="Name"
                               onInput={(e) => {
                                 e.target.value = sanitizeName(e.target.value);
+                                setSendError(""); // clear error when they start fixing
                               }}
                             />
                           </div>
@@ -429,7 +442,10 @@ export default function Home() {
                               placeholder="Phone"
                               inputMode="tel"
                               value={phoneValue}
-                              onChange={(e) => setPhoneValue(formatPhone(e.target.value))}
+                              onChange={(e) => {
+                                setPhoneValue(formatPhone(e.target.value));
+                                setSendError(""); // clear error when they start fixing
+                              }}
                             />
                           </div>
 
@@ -441,11 +457,18 @@ export default function Home() {
                               placeholder="How can I help?"
                             />
                           </div>
-
+                          <div className="mt-3">
+                            <Turnstile
+                              sitekey="0x4AAAAAAC-ujyBXygo0O4v4"
+                              theme="light"
+                              onVerify={(token) => setTsToken(token)}
+                              onExpire={() => setTsToken("")}
+                            />
+                          </div>
                           <button
                             type="submit"
                             className="btn btn-brand fw-bold w-100"
-                            disabled={isSending}
+                            disabled={isSending || !tsToken}
                           >
                             {isSending ? "Sending..." : "Send"}
                           </button>

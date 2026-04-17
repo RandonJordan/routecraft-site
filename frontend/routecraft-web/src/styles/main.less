@@ -67,7 +67,40 @@ hr {
 
 @media (max-width: 991.98px) {
   .navbar .navbar-brand .nav-logo {
-    max-height: 56px !important;
+    max-height: 75px !important;
+  }
+  /* Make the dropdown panel sit neatly under the bar */
+  #navbarContent.collapse.show {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(43, 43, 43, 0.10);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(6px);
+  }
+
+  /* Remove pill look */
+  #navbarContent .nav-link {
+    background: transparent !important;
+    padding: 10px 6px;
+    border-radius: 10px;
+    width: 100%;
+  }
+
+  /* Subtle hover/tap highlight (still clean) */
+  #navbarContent .nav-link:hover {
+    background: rgba(31, 61, 43, 0.06) !important;
+  }
+
+  /* Clean separators */
+  #navbarContent .nav-item + .nav-item {
+    border-top: 1px solid rgba(43, 43, 43, 0.08);
+  }
+
+  /* Hide the desktop underline effect on mobile */
+  .navbar .nav-link::after {
+    display: none !important;
   }
 }
 .navbar .navbar-brand {
@@ -134,7 +167,7 @@ hr {
 
 @media (max-width: 480px) {
   .nav-logo {
-    height: 45px;
+    height: 58px;
   }
 }
 
@@ -206,12 +239,13 @@ hr {
 }
 
 .elevated {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.72);
   border-radius: 1.25rem;
-  border: 1px solid rgba(43, 43, 43, 0.10);
+  border: 1px solid rgba(43, 43, 43, 0.07);
   box-shadow:
-    0 18px 55px rgba(43, 43, 43, 0.18),
-    0 2px 12px rgba(43, 43, 43, 0.10);
+    0 10px 28px rgba(43, 43, 43, 0.10),
+    0 1px 6px rgba(43, 43, 43, 0.06);
+  backdrop-filter: blur(2px);
 }
 
 /* Layout system */
@@ -461,8 +495,43 @@ hr {
   opacity: 0.95;
   transform: scaleX(1);
 }
-.navbar .nav-link:hover::after {
-  opacity: 0.95;
-  transform: scaleX(1);
-  box-shadow: 0 0 12px rgba(200, 164, 106, 0.45);
+
+/* Mobile navbar: make the collapsed menu look like a clean dropdown panel */
+@media (max-width: 991.98px) {
+
+  /* The opened panel */
+  #navbarContent.collapse.show {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(43, 43, 43, 0.10);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(6px);
+  }
+
+  /* Make links look like tappable pills */
+  #navbarContent .navbar-nav {
+    gap: 6px;
+  }
+
+  #navbarContent .nav-link {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(31, 61, 43, 0.04);
+  }
+
+  #navbarContent .nav-link:hover {
+    background: rgba(31, 61, 43, 0.08);
+  }
+
+  /* Optional: make it feel “designed” with a subtle divider */
+  #navbarContent .nav-item + .nav-item {
+    border-top: 1px solid rgba(43, 43, 43, 0.06);
+  }
+
+  #navbarContent .nav-item + .nav-item .nav-link {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 }
