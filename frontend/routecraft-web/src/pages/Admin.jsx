@@ -5,7 +5,7 @@ export default function Admin() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  
+  const API = import.meta.env.VITE_API_BASE_URL;
 if (!API) {
   return (
     <div className="page">
@@ -24,7 +24,7 @@ if (!API) {
     document.title = "Admin | Route Craft";
   }, []);
 
-const API = import.meta.env.VITE_API_BASE_URL;
+
 
 
   async function loadMessages() {
