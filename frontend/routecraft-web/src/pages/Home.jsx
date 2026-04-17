@@ -132,7 +132,7 @@ export default function Home() {
 
 
               {/* Optional API status line */}
-              {apiOk === false && (
+              {import.meta.env.DEV && apiOk === false && (
                 <div className="alert alert-warning mt-4">
                   Backend API is not reachable right now (dev only). Make sure it’s running on port 5055.
                 </div>

@@ -5,19 +5,38 @@ export default function Admin() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  
+if (!API) {
+  return (
+    <div className="page">
+      <div className="container py-5">
+        <h1 className="h4 fw-bold mb-3">Admin Messages</h1>
+        <div className="alert alert-warning">
+          Admin isn’t configured. Missing <code>VITE_API_BASE_URL</code>. Set it and reload.
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
   useEffect(() => {
     document.title = "Admin | Route Craft";
   }, []);
+
+const API = import.meta.env.VITE_API_BASE_URL;
 
 
   async function loadMessages() {
     setErr("");
     setLoading(true);
     setItems([]);
-
+    if (!API) {
+      setErr("Admin is not configured (VITE_API_BASE_URL missing).");
+      return;
+}
     try {
-      
+
       const res = await fetch(`${API}/api/admin/messages`, {
         headers: { "X-Admin-Key": apiKey },
       });
