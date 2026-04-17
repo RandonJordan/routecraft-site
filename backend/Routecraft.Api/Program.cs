@@ -71,6 +71,33 @@ app.MapGet("/api/status", () => Results.Ok(new { ok = true, message = "API is ru
 
 app.MapPost("/api/contact", async (ContactRequest req, AppDbContext db) =>
 {
+    var secret = builder.Configuration["Turnstile:SecretKey"];
+    if (string.IsNullOrWhiteSpace(secret))
+    {
+        return Results.Problem("Turnstile secret key is not configured.");
+    }
+
+    if (string.IsNullOrWhiteSpace(req.TurnstileToken))
+    {
+        return Results.BadRequest(new { ok = false, error = "Turnstile verification is required." });
+    }
+
+    using var http = new HttpClient();
+    var form = new FormUrlEncodedContent(new Dictionary<string, string>
+    {
+        ["secret"] = secret,
+        ["response"] = req.TurnstileToken
+    });
+
+    var verifyRes = await http.PostAsync("https://challenges.cloudflare.com/turnstile/v0/siteverify", form);
+    var verifyJson = await verifyRes.Content.ReadFromJsonAsync<TurnstileVerifyResponse>();
+
+    if (verifyJson is null || !verifyJson.Success)
+    {
+        return Results.BadRequest(new { ok = false, error = "Turnstile verification failed." });
+    }
+
+
     if (string.IsNullOrWhiteSpace(req.Name) ||
         string.IsNullOrWhiteSpace(req.Phone) ||
         string.IsNullOrWhiteSpace(req.Message))
@@ -132,4 +159,10 @@ internal sealed class ContactRequest
     public string Name { get; set; } = "";
     public string Phone { get; set; } = "";
     public string Message { get; set; } = "";
+    public string TurnstileToken { get; set; } = "";
+}
+
+internal sealed class TurnstileVerifyResponse
+{
+    public bool Success { get; set; }
 }
